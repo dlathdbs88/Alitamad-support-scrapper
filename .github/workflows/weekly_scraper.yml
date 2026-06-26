@@ -1,0 +1,32 @@
+name: AlitaMed 지원사업 공고 자동 수집
+
+on:
+  schedule:
+    # 매주 월요일 오전 9시 (KST = UTC+9 → UTC 00:00)
+    - cron: "0 0 * * 1"
+  workflow_dispatch:   # 수동 실행 버튼
+
+jobs:
+  scrape-and-notify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 코드 체크아웃
+        uses: actions/checkout@v4
+
+      - name: Python 3.11 설정
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: 의존성 설치
+        run: pip install -r requirements.txt
+
+      - name: 크롤러 실행 및 이메일 발송
+        env:
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          MAIL_TO:   ${{ secrets.MAIL_TO }}
+        run: python scraper.py
