@@ -1,0 +1,20 @@
+name: Weekly Support Program Scrapper
+on:
+  schedule:
+    - cron: '0 0 * * 1' # 매주 월요일 00:00 UTC (한국시간 09:00)
+
+jobs:
+  scrape-and-analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+      - name: Install dependencies
+        run: pip install openai requests beautifulsoup4
+      - name: Run Scraper and AI analysis
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: python main.py
