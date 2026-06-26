@@ -1,20 +1,39 @@
-name: Weekly Support Program Scrapper
-on:
-  schedule:
-    - cron: '0 0 * * 1' # 매주 월요일 00:00 UTC (한국시간 09:00)
+import openai
+import requests
+from bs4 import BeautifulSoup
+import smtplib
+from email.mime.text import MIMEText
+import os
 
-jobs:
-  scrape-and-analyze:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.9'
-      - name: Install dependencies
-        run: pip install openai requests beautifulsoup4
-      - name: Run Scraper and AI analysis
-        env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-        run: python main.py
+# 설정
+KEYWORDS = ["의료기기", "의료", "R&D", "연구개발", "스타트업", "창업", "경기도", "용인", "바이오", "IVL"]
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+
+def scrape_sites():
+    # 여기에 11개 사이트 수집 로직 구현 (우선 기업마당 예시)
+    results = []
+    # 예: url = "https://www.bizinfo.go.kr/..."
+    # soup = BeautifulSoup(requests.get(url).text, 'html.parser')
+    # ... 수집 로직 ...
+    return results
+
+def filter_with_ai(data):
+    # OpenAI API로 데이터 필터링
+    client = openai.OpenAI(api_key=OPENAI_API_KEY)
+    # ... 프롬프트 로직 ...
+    return filtered_data
+
+def send_email(content):
+    msg = MIMEText(content)
+    msg['Subject'] = "알리타메드 주간 지원사업 보고서"
+    msg['To'] = os.getenv("MAIL_TO")
+    
+    with smtplib.SMTP(os.getenv("SMTP_HOST"), int(os.getenv("SMTP_PORT"))) as server:
+        server.starttls()
+        server.login(os.getenv("SMTP_USER"), os.getenv("SMTP_PASS"))
+        server.send_message(msg)
+
+if __name__ == "__main__":
+    data = scrape_sites()
+    filtered = filter_with_ai(data)
+    send_email(filtered)
