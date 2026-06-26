@@ -1,0 +1,68 @@
+## 개요
+경기도·용인시 소재 의료기기 IVL 분야 스타트업(알리타메드)을 위해
+관련 지원사업 공고를 자동 수집하여 **매주 월요일** 이메일로 발송합니다.
+
+## 수집 대상 사이트 (11곳)
+
+| # | 사이트명 | URL |
+|---|---------|-----|
+| 1 | 기업마당 (중소벤처기업부) | https://www.bizinfo.go.kr |
+| 2 | NTIS 국가 R&D 통합공고 | https://www.ntis.go.kr |
+| 3 | IRIS 범부처통합연구지원시스템 | https://www.iris.go.kr |
+| 4 | 창업진흥원 | https://www.kised.or.kr |
+| 5 | 경기기업비서 (이지비즈) | https://www.egbiz.or.kr |
+| 6 | 경기도경제과학진흥원 | https://www.gbsa.or.kr |
+| 7 | TIPA 중소기업기술정보진흥원 | https://www.tipa.or.kr |
+| 8 | K-스타트업 창업지원포털 | https://www.k-startup.go.kr |
+| 9 | 용인시 기업지원시스템 | https://ybs.ypa.or.kr |
+| 10 | 의료기기안심책방 | https://emedi.mfds.go.kr |
+| 11 | 경기창조경제혁신센터 | https://unicornbridge.kr |
+
+## 파일 구조
+
+```
+alitamed-crawler/
+├── scraper.py                       # 메인 크롤러 + 이메일 발송
+├── requirements.txt                 # Python 의존성
+├── .github/
+│   └── workflows/
+│       └── weekly_scraper.yml       # GitHub Actions 스케줄 설정
+└── README.md
+```
+
+## GitHub Secrets 설정 방법
+
+GitHub 저장소 → **Settings → Secrets and variables → Actions → New repository secret**
+
+| Secret 이름 | 설명 | 예시 |
+|------------|------|------|
+| `SMTP_HOST` | SMTP 서버 주소 | `smtp.gmail.com` |
+| `SMTP_PORT` | SMTP 포트 | `587` |
+| `SMTP_USER` | 발신 이메일 계정 | `alitamed@gmail.com` |
+| `SMTP_PASS` | 이메일 앱 비밀번호 | Gmail 앱 비밀번호 16자리 |
+| `MAIL_TO` | 수신자 (콤마 구분 가능) | `a@co.kr,b@co.kr` |
+
+> **Gmail 사용 시**: Google 계정 → 보안 → 2단계 인증 활성화 후 **앱 비밀번호** 발급
+
+## 실행 주기
+
+- **자동**: 매주 월요일 오전 9시 KST
+- **수동**: GitHub Actions 탭 → `workflow_dispatch` 버튼 클릭
+
+## 키워드 필터
+
+아래 키워드가 공고 제목에 포함된 경우만 수집합니다:
+
+```
+의료기기, 의료, R&D, 연구개발, 스타트업, 창업,
+중소기업, 벤처, 기술개발, 경기도, 용인, 바이오,
+IVL, 혈관, 심혈관, 카테터, 의료기술
+```
+
+`scraper.py` 상단의 `KEYWORDS` 리스트를 수정하면 조정할 수 있습니다.
+
+## 주의사항
+
+- 일부 사이트는 JavaScript 렌더링이 필요하여 정적 크롤링 결과가 제한될 수 있습니다.
+- 사이트 구조 변경 시 해당 크롤러 함수(`scrape_*`)를 업데이트해 주세요.
+- 과도한 요청을 방지하기 위해 타임아웃은 15초로 설정되어 있습니다.
